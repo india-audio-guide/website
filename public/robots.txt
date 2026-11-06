@@ -1,0 +1,5 @@
+User-agent: *
+Allow: /
+Disallow: /admin
+Disallow: /admin/
+Sitemap: https://india-audio-guide.github.io/website/sitemap.xml

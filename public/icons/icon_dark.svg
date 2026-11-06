@@ -1,0 +1,47 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1024 1024" width="100%" height="100%">
+  <!-- 1. Background Squircle Tile (Terracotta #B4441A) -->
+  <!-- Tip: For Xcode / Android Studio full-bleed icon assets, change x="0" y="0" width="1024" height="1024" rx="0" -->
+  <rect id="background-tile" x="126" y="126.5" width="771" height="771" rx="178" ry="178" fill="#B4441A" />
+
+  <!-- 2. Minimal Headband Arc (Near-Black #1F1C1A, no ear cups) -->
+  <path id="headband-arc" d="M 277,625 A 270,270 0 1,1 746,625" fill="none" stroke="#1F1C1A" stroke-width="42" stroke-linecap="round" />
+
+  <!-- 3. Location Map Pin (Near-Black #1F1C1A) -->
+  <path id="map-pin" d="M 511.5,288
+           C 403,288 315,379 315,492
+           C 315,595 415,712 497,813
+           Q 511.5,831 526,813
+           C 608,712 708,595 708,492
+           C 708,379 620,288 511.5,288 Z" fill="#1F1C1A" />
+
+  <!-- 4. Walking Person Cutout (Terracotta #B4441A) -->
+  <g id="walker-cutout" fill="#B4441A">
+    <!-- Head -->
+    <circle cx="520.4" cy="381.8" r="26.8" />
+    <!-- Body, Arms & Legs -->
+    <path d="M 486,422
+             C 499,411 523,411 533,427
+             L 547,464
+             L 581,487
+             C 593,493 589,513 574,513
+             C 568,513 564,511 558,507
+             L 523,484
+             L 517,515
+             L 552,569
+             L 566,617
+             C 570,631 548,639 539,625
+             L 525,579
+             L 496,538
+             L 478,584
+             L 453,627
+             C 445,639 423,629 431,613
+             L 451,571
+             L 474,507
+             L 480,457
+             L 464,470
+             L 458,507
+             C 456,521 433,519 437,503
+             L 445,457
+             C 447,451 453,445 460,441 Z" />
+  </g>
+</svg>
