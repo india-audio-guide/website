@@ -19,9 +19,19 @@ import {
   normalizePhone,
   parseRequestedEnv,
 } from "./guard.js";
+import {
+  initialLoginForm,
+  loginFormView,
+  reduceLoginForm,
+  submitIntent,
+} from "./loginForm.js";
 
-const phoneForm = document.getElementById("phone-form");
-const codeForm = document.getElementById("code-form");
+const loginForm = document.getElementById("login-form");
+const codeField = document.getElementById("code-field");
+const phoneInput = document.getElementById("phone");
+const codeInput = document.getElementById("code");
+const primaryBtn = document.getElementById("primary-action");
+const changeNumberBtn = document.getElementById("change-number");
 const checking = document.getElementById("checking");
 const signedIn = document.getElementById("signed-in");
 const signedInBody = document.getElementById("signed-in-body");
@@ -29,8 +39,6 @@ const signedInExtra = document.getElementById("signed-in-extra");
 const statusEl = document.getElementById("status");
 const errorEl = document.getElementById("error");
 const envKicker = document.getElementById("env-kicker");
-const sendBtn = document.getElementById("send-code");
-const verifyBtn = document.getElementById("verify-code");
 const signOutBtn = document.getElementById("sign-out");
 
 let auth = null;
@@ -39,6 +47,7 @@ let verifier = null;
 let confirmation = null;
 let generation = 0;
 let view = "form";
+let formState = initialLoginForm();
 
 function nextGeneration() {
   generation += 1;
@@ -86,6 +95,25 @@ function explainFirebaseError(err) {
   }
 }
 
+function dispatchForm(action) {
+  formState = reduceLoginForm(formState, action);
+  const ui = loginFormView(formState);
+  primaryBtn.textContent = ui.buttonLabel;
+  primaryBtn.disabled = ui.buttonDisabled;
+  codeField.hidden = !ui.showCode;
+  phoneInput.readOnly = ui.phoneLocked;
+  changeNumberBtn.hidden = !ui.showChangeNumber;
+  setText(statusEl, ui.status);
+  setText(errorEl, ui.error);
+  if (ui.showCode) {
+    codeInput.focus();
+  }
+}
+
+function explainAndStay(actionType, err) {
+  dispatchForm({ type: actionType, error: explainFirebaseError(err) });
+}
+
 function showError(message) {
   setText(errorEl, message);
   setText(statusEl, "");
@@ -96,15 +124,22 @@ function showStatus(message) {
   setText(errorEl, "");
 }
 
+function resetLoginForm(action = { type: "reset" }) {
+  confirmation = null;
+  clearVerifier();
+  if (codeInput) codeInput.value = "";
+  dispatchForm(action);
+}
+
 function showView(next) {
   view = next;
   const isChecking = next === "checking";
   const isAdmin = next === "admin";
   checking.hidden = !isChecking;
   signedIn.hidden = !isAdmin;
-  phoneForm.hidden = isChecking || isAdmin;
+  loginForm.hidden = isChecking || isAdmin;
   if (isChecking || isAdmin) {
-    codeForm.hidden = true;
+    changeNumberBtn.hidden = true;
   }
 }
 
@@ -137,12 +172,12 @@ function ensureVerifier() {
 async function syncUser(user) {
   const snapshot = nextGeneration();
   if (!user) {
-    confirmation = null;
     if (view === "admin") {
       showView("form");
-      showError(denialMessage("no-user"));
+      resetLoginForm({ type: "reset", error: denialMessage("no-user") });
     } else if (view === "checking") {
       showView("form");
+      resetLoginForm();
     }
     return;
   }
@@ -161,7 +196,7 @@ async function syncUser(user) {
     await safeSignOut();
     if (isStale(snapshot)) return;
     showView("form");
-    showError(denialMessage("token-error"));
+    resetLoginForm({ type: "reset", error: denialMessage("token-error") });
     return;
   }
   if (isStale(snapshot)) return;
@@ -182,14 +217,61 @@ async function syncUser(user) {
   await safeSignOut();
   if (isStale(snapshot)) return;
   showView("form");
-  showError(denialMessage(decision.reason));
+  resetLoginForm({ type: "reset", error: denialMessage(decision.reason) });
+}
+
+async function sendCode() {
+  const phone = normalizePhone(phoneInput.value);
+  if (!isE164(phone)) {
+    dispatchForm({
+      type: "validate",
+      error: "Enter a valid phone number including country code, for example +91…",
+    });
+    return;
+  }
+  dispatchForm({ type: "send-start" });
+  try {
+    clearVerifier();
+    confirmation = await signInWithPhoneNumber(auth, phone, ensureVerifier());
+    dispatchForm({ type: "send-success" });
+  } catch (err) {
+    confirmation = null;
+    clearVerifier();
+    explainAndStay("send-failure", err);
+  }
+}
+
+async function verifyCode() {
+  if (!confirmation) {
+    dispatchForm({
+      type: "verify-failure",
+      error: "Request a new code, then try again.",
+    });
+    return;
+  }
+  const code = String(codeInput.value ?? "").trim();
+  if (!code) {
+    dispatchForm({ type: "validate", error: "Enter the SMS code." });
+    return;
+  }
+  dispatchForm({ type: "verify-start" });
+  const pending = confirmation;
+  try {
+    await pending.confirm(code);
+    confirmation = null;
+    dispatchForm({ type: "verify-success" });
+  } catch (err) {
+    if (auth?.currentUser && pending !== confirmation) {
+      return;
+    }
+    explainAndStay("verify-failure", err);
+  }
 }
 
 async function start() {
   const requested = parseRequestedEnv(window.location.search);
   if (!requested.ok) {
-    phoneForm.hidden = true;
-    codeForm.hidden = true;
+    loginForm.hidden = true;
     showError(requested.error);
     return;
   }
@@ -197,8 +279,7 @@ async function start() {
   envConfig = ENVS[requested.env];
   envKicker.textContent = `Admin · ${envConfig.name}`;
   if (!firebaseConfigReady(envConfig)) {
-    phoneForm.hidden = true;
-    codeForm.hidden = true;
+    loginForm.hidden = true;
     showError("This environment's public Firebase config is incomplete.");
     return;
   }
@@ -214,6 +295,8 @@ async function start() {
     return;
   }
 
+  dispatchForm({ type: "reset" });
+
   onAuthStateChanged(auth, (user) => {
     void syncUser(user);
   });
@@ -222,57 +305,22 @@ async function start() {
   });
 }
 
-phoneForm.addEventListener("submit", async (event) => {
+loginForm.addEventListener("submit", async (event) => {
   event.preventDefault();
   if (!auth) return;
-  const phone = normalizePhone(document.getElementById("phone").value);
-  if (!isE164(phone)) {
-    showError("Enter a valid phone number including country code, for example +91…");
+  const intent = submitIntent(formState);
+  if (intent.type === "send") {
+    await sendCode();
     return;
   }
-  sendBtn.disabled = true;
-  showError("");
-  showStatus("Sending a verification code…");
-  try {
-    clearVerifier();
-    confirmation = await signInWithPhoneNumber(auth, phone, ensureVerifier());
-    codeForm.hidden = false;
-    showStatus("Enter the code sent to your phone.");
-  } catch (err) {
-    clearVerifier();
-    confirmation = null;
-    showError(explainFirebaseError(err));
-  } finally {
-    sendBtn.disabled = false;
+  if (intent.type === "verify") {
+    await verifyCode();
   }
 });
 
-codeForm.addEventListener("submit", async (event) => {
-  event.preventDefault();
-  if (!confirmation) {
-    showError("Request a new code, then try again.");
-    return;
-  }
-  const code = String(document.getElementById("code").value ?? "").trim();
-  if (!code) {
-    showError("Enter the SMS code.");
-    return;
-  }
-  verifyBtn.disabled = true;
-  showError("");
-  showStatus("Verifying…");
-  const pending = confirmation;
-  try {
-    await pending.confirm(code);
-    confirmation = null;
-  } catch (err) {
-    if (auth?.currentUser && pending !== confirmation) {
-      return;
-    }
-    showError(explainFirebaseError(err));
-  } finally {
-    verifyBtn.disabled = false;
-  }
+changeNumberBtn.addEventListener("click", () => {
+  resetLoginForm();
+  phoneInput.focus();
 });
 
 signOutBtn.addEventListener("click", async () => {
@@ -280,7 +328,7 @@ signOutBtn.addEventListener("click", async () => {
   await safeSignOut();
   if (isStale(snapshot)) return;
   showView("form");
-  showStatus("You have signed out.");
+  resetLoginForm({ type: "reset", status: "You have signed out." });
 });
 
 void start();

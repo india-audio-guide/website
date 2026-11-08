@@ -82,6 +82,29 @@
   cursor: not-allowed;
 }
 
+.btn-text {
+  appearance: none;
+  border: 0;
+  padding: 0;
+  background: none;
+  color: var(--accent);
+  font: inherit;
+  font-size: 14px;
+  line-height: 20px;
+  font-weight: 500;
+  cursor: pointer;
+  text-align: left;
+}
+
+.btn-text:hover {
+  color: var(--accent-pressed);
+}
+
+#code-field {
+  display: grid;
+  gap: var(--space-m);
+}
+
 #recaptcha-container {
   min-height: 0;
 }

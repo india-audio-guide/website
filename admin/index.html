@@ -32,7 +32,7 @@
         <p>Please wait while we confirm your account.</p>
       </section>
 
-      <form id="phone-form" class="note admin-form" autocomplete="tel">
+      <form id="login-form" class="note admin-form">
         <label for="phone">Phone number</label>
         <input
           id="phone"
@@ -43,22 +43,22 @@
           autocomplete="tel"
           required
         />
+        <div id="code-field" hidden>
+          <label for="code">SMS code</label>
+          <input
+            id="code"
+            name="code"
+            type="text"
+            inputmode="numeric"
+            pattern="[0-9]*"
+            autocomplete="one-time-code"
+          />
+        </div>
         <div id="recaptcha-container"></div>
-        <button type="submit" class="btn" id="send-code">Send code</button>
-      </form>
-
-      <form id="code-form" class="note admin-form" hidden autocomplete="one-time-code">
-        <label for="code">SMS code</label>
-        <input
-          id="code"
-          name="code"
-          type="text"
-          inputmode="numeric"
-          pattern="[0-9]*"
-          autocomplete="one-time-code"
-          required
-        />
-        <button type="submit" class="btn" id="verify-code">Verify</button>
+        <button type="submit" class="btn" id="primary-action">Send code</button>
+        <button type="button" class="btn-text" id="change-number" hidden>
+          Change number
+        </button>
       </form>
 
       <section id="signed-in" class="note" hidden>
