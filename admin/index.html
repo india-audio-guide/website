@@ -1,0 +1,73 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Admin sign in · India Audio Guide</title>
+    <meta name="robots" content="noindex, nofollow" />
+    <meta name="theme-color" content="#B4441A" />
+    <link rel="icon" href="/favicon.svg" type="image/svg+xml" />
+    <link rel="stylesheet" href="/src/admin/admin.css" />
+  </head>
+  <body class="admin-page">
+    <a class="skip" href="#admin-main">Skip to content</a>
+    <header class="admin-header">
+      <div class="wrap admin-brand">
+        <img src="/icons/icon_light.svg" width="44" height="44" alt="" />
+        <span class="brand-name">India Audio Guide</span>
+      </div>
+    </header>
+    <main id="admin-main" class="wrap admin-main">
+      <p class="section-kicker" id="env-kicker">Admin</p>
+      <h1>Sign in</h1>
+      <p class="section-lead" id="intro">
+        Use the phone number on your account. Only admins can stay signed in.
+      </p>
+
+      <p id="status" class="status" hidden role="status"></p>
+      <p id="error" class="error" hidden role="alert"></p>
+
+      <section id="checking" class="note" hidden>
+        <h2>Checking access…</h2>
+        <p>Please wait while we confirm your account.</p>
+      </section>
+
+      <form id="phone-form" class="note admin-form" autocomplete="tel">
+        <label for="phone">Phone number</label>
+        <input
+          id="phone"
+          name="phone"
+          type="tel"
+          inputmode="tel"
+          placeholder="+91…"
+          autocomplete="tel"
+          required
+        />
+        <div id="recaptcha-container"></div>
+        <button type="submit" class="btn" id="send-code">Send code</button>
+      </form>
+
+      <form id="code-form" class="note admin-form" hidden autocomplete="one-time-code">
+        <label for="code">SMS code</label>
+        <input
+          id="code"
+          name="code"
+          type="text"
+          inputmode="numeric"
+          pattern="[0-9]*"
+          autocomplete="one-time-code"
+          required
+        />
+        <button type="submit" class="btn" id="verify-code">Verify</button>
+      </form>
+
+      <section id="signed-in" class="note" hidden>
+        <h2>Signed in</h2>
+        <p id="signed-in-body"></p>
+        <p id="signed-in-extra"></p>
+        <button type="button" class="btn" id="sign-out">Sign out</button>
+      </section>
+    </main>
+    <script type="module" src="/src/admin/main.js"></script>
+  </body>
+</html>
