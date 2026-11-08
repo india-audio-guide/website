@@ -25,6 +25,7 @@ import {
   reduceLoginForm,
   submitIntent,
 } from "./loginForm.js";
+import { explainFirebaseError } from "./errors.js";
 
 const loginForm = document.getElementById("login-form");
 const codeField = document.getElementById("code-field");
@@ -66,32 +67,6 @@ function setText(el, text) {
   } else {
     el.hidden = true;
     el.textContent = "";
-  }
-}
-
-function explainFirebaseError(err) {
-  switch (err?.code) {
-    case "auth/unauthorized-domain":
-      return "This site is not listed as an authorized domain in Firebase Auth. Add india-audio-guide.github.io for this project, then try again.";
-    case "auth/operation-not-allowed":
-      return "Phone sign-in is not enabled for this Firebase project.";
-    case "auth/invalid-phone-number":
-    case "auth/missing-phone-number":
-      return "Enter a valid phone number including country code, for example +91…";
-    case "auth/invalid-verification-code":
-      return "That code was not valid. Try again.";
-    case "auth/code-expired":
-    case "auth/session-expired":
-      return "That code expired. Request a new one.";
-    case "auth/too-many-requests":
-      return "Too many attempts. Wait a bit and try again.";
-    case "auth/captcha-check-failed":
-    case "auth/invalid-app-credential":
-      return "The reCAPTCHA check failed. Reload the page and try again.";
-    case "auth/network-request-failed":
-      return "Network error. Check your connection and try again.";
-    default:
-      return "Something went wrong while signing in. Reload the page and try again.";
   }
 }
 
