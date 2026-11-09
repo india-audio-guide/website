@@ -11,13 +11,13 @@ import {
 import { initializeApp } from "firebase/app";
 import { ENVS } from "./config.js";
 import {
-  apiBasesConfigured,
   denialMessage,
   evaluateAuthEvent,
   firebaseConfigReady,
   isE164,
   normalizePhone,
   parseRequestedEnv,
+  toolsDecision,
 } from "./guard.js";
 import {
   initialLoginForm,
@@ -26,6 +26,8 @@ import {
   submitIntent,
 } from "./loginForm.js";
 import { explainFirebaseError } from "./errors.js";
+import { createApiClient } from "./api.js";
+import { mountAdminTools } from "./screens.js";
 
 const loginForm = document.getElementById("login-form");
 const codeField = document.getElementById("code-field");
@@ -41,6 +43,8 @@ const statusEl = document.getElementById("status");
 const errorEl = document.getElementById("error");
 const envKicker = document.getElementById("env-kicker");
 const signOutBtn = document.getElementById("sign-out");
+const toolsRoot = document.getElementById("admin-tools");
+const adminMain = document.getElementById("admin-main");
 
 let auth = null;
 let envConfig = null;
@@ -49,6 +53,28 @@ let confirmation = null;
 let generation = 0;
 let view = "form";
 let formState = initialLoginForm();
+let tools = null;
+
+function unmountTools() {
+  tools?.unmount();
+  tools = null;
+  if (toolsRoot) {
+    toolsRoot.replaceChildren();
+    toolsRoot.hidden = true;
+  }
+  adminMain?.classList.remove("admin-wide");
+}
+
+function mountTools() {
+  if (tools) return;
+  const api = createApiClient({
+    bases: envConfig.apis,
+    getToken: (forceRefresh) =>
+      auth?.currentUser ? auth.currentUser.getIdToken(Boolean(forceRefresh)) : Promise.resolve(null),
+  });
+  adminMain?.classList.add("admin-wide");
+  tools = mountAdminTools(toolsRoot, { api });
+}
 
 function nextGeneration() {
   generation += 1;
@@ -110,6 +136,7 @@ function showView(next) {
   view = next;
   const isChecking = next === "checking";
   const isAdmin = next === "admin";
+  if (!isAdmin) unmountTools();
   checking.hidden = !isChecking;
   signedIn.hidden = !isAdmin;
   loginForm.hidden = isChecking || isAdmin;
@@ -180,10 +207,14 @@ async function syncUser(user) {
   if (decision.state === "admin") {
     const phone = user.phoneNumber ? ` (${user.phoneNumber})` : "";
     signedInBody.textContent = `You are signed in as an admin on ${envConfig.name}${phone}.`;
-    signedInExtra.textContent = apiBasesConfigured(envConfig)
-      ? "Admin tools are not on this page yet."
-      : "Admin API addresses are not configured for this environment yet, so this page will not call them.";
+    const toolsState = toolsDecision(decision, envConfig);
+    signedInExtra.textContent =
+      toolsState === "mount"
+        ? "Manage places, spots, collections and images below."
+        : "Admin APIs are not configured for this environment, so this page will not call them.";
     showView("admin");
+    if (toolsState === "mount") mountTools();
+    else unmountTools();
     showStatus("");
     showError("");
     return;

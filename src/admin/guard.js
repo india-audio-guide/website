@@ -110,3 +110,12 @@ export function denialMessage(reason) {
       return "You're not authorized to use admin tools.";
   }
 }
+
+/**
+ * Whether the catalogue tools may mount: only for an admin decision, and only when the env has
+ * API bases. Returns "mount", "not-configured" or "hide".
+ */
+export function toolsDecision(decision, envConfig) {
+  if (decision?.state !== "admin") return "hide";
+  return apiBasesConfigured(envConfig) ? "mount" : "not-configured";
+}
