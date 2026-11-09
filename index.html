@@ -28,17 +28,24 @@
     <a class="skip" href="#main">Skip to content</a>
 
     <header class="site-header">
-      <div class="wrap">
+      <div class="wrap header-row">
         <a class="brand" href="#top">
           <img src="/icons/icon_light.svg" width="44" height="44" alt="" />
           <span class="brand-name">India Audio Guide</span>
         </a>
+        <nav class="header-nav" aria-label="On this page">
+          <a class="chip" href="#how">How it works</a>
+          <a class="chip" href="#places">Places</a>
+          <a class="chip" href="#app">The app</a>
+        </nav>
       </div>
     </header>
 
-    <section class="hero" id="top" aria-label="Introduction">
-      <div class="wrap hero-inner">
-        <p class="eyebrow">Audio guides for heritage</p>
+    <section class="hero" id="top" aria-label="Virupaksha Temple from Hemakuta Hill, Hampi"></section>
+
+    <div class="intro-sheet">
+      <div class="wrap sheet-inner reveal">
+        <p class="kicker">Audio guides for heritage</p>
         <h1>Hear India as you walk it</h1>
         <p class="hindi">चलते चलते, इतिहास आपसे बात करता है।</p>
         <p class="lede">
@@ -46,195 +53,270 @@
           a hillside — and hearing what the place remembers. We start in Hampi,
           among the granite boulders of Vijayanagara.
         </p>
+        <div class="stat-strip" aria-label="At a glance">
+          <div>
+            <strong>Hampi</strong>
+            <span>First place</span>
+          </div>
+          <div>
+            <strong>EN · HI · KN</strong>
+            <span>Languages</span>
+          </div>
+          <div>
+            <strong>On foot</strong>
+            <span>The pace</span>
+          </div>
+        </div>
       </div>
-    </section>
+    </div>
 
     <main id="main">
-      <section class="surface">
+      <section class="surface" id="how">
         <div class="wrap">
-          <p class="section-kicker">How it works</p>
-          <h2>A voice beside you, not a plaque behind glass</h2>
+          <div class="section-row">
+            <div>
+              <p class="kicker">How it works</p>
+              <h2>A voice beside you, not a plaque behind glass</h2>
+            </div>
+            <a class="icon-btn" href="#places" aria-label="See the places">
+              <svg width="18" height="18" viewBox="0 0 24 24" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <path d="M5 12h14" />
+                <path d="M13 6l6 6-6 6" />
+              </svg>
+            </a>
+          </div>
           <p class="section-lead">
             The stories are written for walking. Each place holds many spots —
             a sanctum, a mandapa, a viewpoint — and each one has its own short
             guide, in more than one language.
           </p>
-          <div class="steps">
-            <article class="step">
+          <ol class="feature-list">
+            <li>
               <span class="step-num">1</span>
-              <h3>Choose a place</h3>
-              <p>
-                Begin somewhere like Hampi, the ruined capital spread across
-                river, palms and stone.
-              </p>
-            </article>
-            <article class="step">
+              <div>
+                <h3>Choose a place</h3>
+                <p>
+                  Begin somewhere like Hampi, the ruined capital spread across
+                  river, palms and stone.
+                </p>
+              </div>
+            </li>
+            <li>
               <span class="step-num">2</span>
-              <h3>Walk to a spot</h3>
-              <p>
-                Virupaksha Temple, the Vittala stone chariot, a ridge at
-                sunset — open the guide when you arrive.
-              </p>
-            </article>
-            <article class="step">
+              <div>
+                <h3>Walk to a spot</h3>
+                <p>
+                  Virupaksha Temple, the Vittala stone chariot, a ridge at
+                  sunset — open the guide when you arrive.
+                </p>
+              </div>
+            </li>
+            <li>
               <span class="step-num">3</span>
-              <h3>Listen in your language</h3>
-              <p>
-                English, Hindi, Kannada and more, read in a voice chosen for
-                the place.
-              </p>
-            </article>
-          </div>
+              <div>
+                <h3>Listen in your language</h3>
+                <p>
+                  English, Hindi, Kannada and more, read in a voice chosen for
+                  the place.
+                </p>
+              </div>
+            </li>
+          </ol>
         </div>
       </section>
 
-      <section>
-        <div class="wrap spotlight">
-          <div>
-            <p class="section-kicker">Hampi</p>
+      <section id="hampi">
+        <div class="wrap split">
+          <article class="place-card">
+            <div class="card-media">
+              <img
+                src="/images/place-hampi-virupaksha.webp"
+                width="1600"
+                height="1066"
+                alt="The Virupaksha Temple complex in Hampi, with its tall gopuram rising above stone mandapas"
+              />
+              <span class="badge">First guide</span>
+            </div>
+            <h3>Virupaksha Temple</h3>
+            <p>Hampi · Karnataka · Photo: iMahesh, CC BY-SA 4.0</p>
+          </article>
+          <div class="reveal">
+            <p class="kicker">Hampi</p>
             <h2>Where the first stories live</h2>
-            <p>
+            <p class="section-lead">
               Hampi is our first home. The Virupaksha gopuram still watches
               over a living temple. A few minutes away, the stone chariot
               stands in the Vittala courtyard, wheels carved so finely they
               almost look ready to move. Between them, boulder hills and banana
               groves hold the rest of Vijayanagara.
             </p>
-            <p style="margin-top: 16px">
+            <p class="section-lead">
               Put your earphones in at the gate, and let the walk set the pace.
               This is not a lecture. It is a companion for the path you are
               already on.
             </p>
+            <div class="tags" aria-label="Guide tags">
+              <span class="tag">English</span>
+              <span class="tag">Hindi</span>
+              <span class="tag">Kannada</span>
+              <span class="tag">Walking</span>
+            </div>
           </div>
-          <figure class="photo-frame">
-            <img
-              src="/images/place-hampi-virupaksha.webp"
-              width="1600"
-              height="1066"
-              alt="The Virupaksha Temple complex in Hampi, with its tall gopuram rising above stone mandapas"
-            />
-            <figcaption>Virupaksha Temple, Hampi. Photo: iMahesh, CC BY-SA 4.0</figcaption>
-          </figure>
         </div>
       </section>
 
-      <section class="surface">
+      <section class="surface" id="places">
         <div class="wrap">
-          <p class="section-kicker">Places</p>
-          <h2>Landscapes the stories belong to</h2>
+          <div class="section-row">
+            <div>
+              <p class="kicker">Places</p>
+              <h2>Landscapes the stories belong to</h2>
+            </div>
+            <a class="icon-btn" href="#place-qutub" aria-label="End of the places row">
+              <svg width="18" height="18" viewBox="0 0 24 24" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <path d="M5 12h14" />
+                <path d="M13 6l6 6-6 6" />
+              </svg>
+            </a>
+          </div>
           <p class="section-lead">
             Hampi leads. These photographs — of Hampi and of other Indian
             heritage places — are the kind of ground the guides are written
             for.
           </p>
-          <div class="places">
-            <article class="place-card wide">
-              <img
-                src="/images/place-hampi-chariot.webp"
-                width="1600"
-                height="1066"
-                alt="The stone chariot in the Vittala Temple courtyard at Hampi"
-              />
-              <div class="meta">
-                <h3>The stone chariot, Hampi</h3>
-                <p>Vittala Temple, Karnataka — a spot inside the larger place.</p>
+          <div class="carousel">
+            <article class="place-card" id="place-chariot">
+              <div class="card-media">
+                <img
+                  src="/images/place-hampi-chariot.webp"
+                  width="1600"
+                  height="1066"
+                  alt="The stone chariot in the Vittala Temple courtyard at Hampi"
+                />
+                <span class="badge">Hampi</span>
               </div>
+              <h3>The stone chariot</h3>
+              <p>Vittala Temple · Karnataka</p>
             </article>
             <article class="place-card">
-              <img
-                src="/images/place-taj-mahal.webp"
-                width="1600"
-                height="1064"
-                alt="The Taj Mahal in Agra seen across the reflecting gardens"
-              />
-              <div class="meta">
-                <h3>Taj Mahal</h3>
-                <p>Agra, Uttar Pradesh</p>
+              <div class="card-media">
+                <img
+                  src="/images/place-taj-mahal.webp"
+                  width="1600"
+                  height="1064"
+                  alt="The Taj Mahal in Agra seen across the reflecting gardens"
+                />
+                <span class="badge">Photograph</span>
               </div>
+              <h3>Taj Mahal</h3>
+              <p>Agra · Uttar Pradesh</p>
             </article>
             <article class="place-card">
-              <img
-                src="/images/place-amber-fort.webp"
-                width="1600"
-                height="1066"
-                alt="Amber Fort above the patterned Kesar Kyari garden in Jaipur"
-              />
-              <div class="meta">
-                <h3>Amber Fort</h3>
-                <p>Jaipur, Rajasthan</p>
+              <div class="card-media">
+                <img
+                  src="/images/place-amber-fort.webp"
+                  width="1600"
+                  height="1066"
+                  alt="Amber Fort above the patterned Kesar Kyari garden in Jaipur"
+                />
+                <span class="badge">Photograph</span>
               </div>
+              <h3>Amber Fort</h3>
+              <p>Jaipur · Rajasthan</p>
             </article>
             <article class="place-card">
-              <img
-                src="/images/place-konark.webp"
-                width="1600"
-                height="1110"
-                alt="A carved stone chariot wheel at the Konark Sun Temple"
-              />
-              <div class="meta">
-                <h3>Konark Sun Temple</h3>
-                <p>Puri district, Odisha</p>
+              <div class="card-media">
+                <img
+                  src="/images/place-konark.webp"
+                  width="1600"
+                  height="1110"
+                  alt="A carved stone chariot wheel at the Konark Sun Temple"
+                />
+                <span class="badge">Photograph</span>
               </div>
+              <h3>Konark Sun Temple</h3>
+              <p>Puri district · Odisha</p>
             </article>
             <article class="place-card">
-              <img
-                src="/images/place-meenakshi.webp"
-                width="1600"
-                height="1087"
-                alt="The colourful gopurams of Meenakshi Temple rising over Madurai"
-              />
-              <div class="meta">
-                <h3>Meenakshi Temple</h3>
-                <p>Madurai, Tamil Nadu</p>
+              <div class="card-media">
+                <img
+                  src="/images/place-meenakshi.webp"
+                  width="1600"
+                  height="1087"
+                  alt="The colourful gopurams of Meenakshi Temple rising over Madurai"
+                />
+                <span class="badge">Photograph</span>
               </div>
+              <h3>Meenakshi Temple</h3>
+              <p>Madurai · Tamil Nadu</p>
             </article>
-            <article class="place-card">
-              <img
-                src="/images/place-qutub-minar.webp"
-                width="1600"
-                height="1034"
-                alt="Qutb Minar rising above the mosque courtyard in Delhi"
-              />
-              <div class="meta">
-                <h3>Qutb Minar</h3>
-                <p>Delhi</p>
+            <article class="place-card" id="place-qutub">
+              <div class="card-media">
+                <img
+                  src="/images/place-qutub-minar.webp"
+                  width="1600"
+                  height="1034"
+                  alt="Qutb Minar rising above the mosque courtyard in Delhi"
+                />
+                <span class="badge">Photograph</span>
               </div>
+              <h3>Qutb Minar</h3>
+              <p>Delhi</p>
             </article>
           </div>
         </div>
       </section>
 
       <section class="band" aria-label="Hampi landscape">
-        <div class="wrap band-inner">
-          <h2>Granite, palms, and a city remembered in stone</h2>
-          <p>
-            From Matanga Hill the whole of Hampi opens — the same ground you
-            will walk with a guide in your ear.
-          </p>
+        <div class="band-photo"></div>
+        <div class="band-sheet">
+          <div class="wrap reveal">
+            <h2>Granite, palms, and a city remembered in stone</h2>
+            <p>
+              From Matanga Hill the whole of Hampi opens — the same ground you
+              will walk with a guide in your ear.
+            </p>
+          </div>
         </div>
       </section>
 
-      <section>
+      <section id="app">
         <div class="wrap">
-          <p class="section-kicker">The app</p>
+          <p class="kicker">The app</p>
           <h2>Coming to iPhone and Android</h2>
           <p class="section-lead">
             India Audio Guide is being built as a phone companion for the
             walk. Store listings will appear here when the apps are ready.
           </p>
-          <div class="promise">
-            <article class="note">
-              <h3>Written for walking</h3>
-              <p>Short, timed pieces you can hear while you move, not a book you have to sit down with.</p>
-            </article>
-            <article class="note">
-              <h3>Places and their spots</h3>
-              <p>A temple town is more than one pin on a map. Each courtyard and hillside can have its own voice.</p>
-            </article>
-            <article class="note">
-              <h3>More than one language</h3>
-              <p>The same walk, told in English, Hindi, Kannada and the languages that follow.</p>
-            </article>
+          <ul class="feature-list">
+            <li>
+              <span class="step-num">1</span>
+              <div>
+                <h3>Written for walking</h3>
+                <p>Short, timed pieces you can hear while you move, not a book you have to sit down with.</p>
+              </div>
+            </li>
+            <li>
+              <span class="step-num">2</span>
+              <div>
+                <h3>Places and their spots</h3>
+                <p>A temple town is more than one pin on a map. Each courtyard and hillside can have its own voice.</p>
+              </div>
+            </li>
+            <li>
+              <span class="step-num">3</span>
+              <div>
+                <h3>More than one language</h3>
+                <p>The same walk, told in English, Hindi, Kannada and the languages that follow.</p>
+              </div>
+            </li>
+          </ul>
+          <div class="cta-bar">
+            <div class="cta-copy">
+              <strong>Listings later</strong>
+              <span>No download yet. The first stories are in Hampi.</span>
+            </div>
+            <a class="btn" href="#hampi">Start with Hampi</a>
           </div>
         </div>
       </section>
@@ -323,5 +405,13 @@
         <p>India Audio Guide</p>
       </div>
     </footer>
+
+    <a class="floating-cta" href="#places">
+      <span class="floating-copy">
+        <strong>Hampi</strong>
+        <span>First guide</span>
+      </span>
+      <span class="btn">See the places</span>
+    </a>
   </body>
 </html>

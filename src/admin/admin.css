@@ -1,7 +1,7 @@
 @import "../styles.css";
 
 .admin-page {
-  --danger: #b3261e;
+  --danger: var(--error);
   min-height: 100vh;
   background: var(--surface);
 }
@@ -45,7 +45,11 @@
   font-weight: 500;
 }
 
-.admin-form input {
+.admin-form input,
+.tools input[type="text"],
+.tools input[type="search"],
+.tools select,
+.tools textarea {
   width: 100%;
   padding: 14px 16px;
   border: 1px solid var(--border);
@@ -53,6 +57,9 @@
   background: var(--bg);
   color: var(--text-primary);
   font: inherit;
+  font-size: 16px;
+  line-height: 24px;
+  transition: border-color var(--dur-short) var(--ease-standard);
 }
 
 .admin-form input:focus {
@@ -62,43 +69,17 @@
 
 .btn {
   appearance: none;
-  border: 0;
-  border-radius: 999px;
-  padding: 14px 20px;
-  background: var(--accent);
-  color: var(--on-accent);
-  font: inherit;
-  font-size: 14px;
-  line-height: 20px;
-  font-weight: 500;
-  cursor: pointer;
 }
 
-.btn:hover {
-  background: var(--accent-pressed);
+form.toolbar > .btn:not(.btn-secondary):not(.btn-danger) {
+  background: var(--surface-variant);
+  color: var(--text-primary);
 }
 
-.btn:disabled {
-  opacity: 0.38;
-  cursor: not-allowed;
-}
-
-.btn-text {
-  appearance: none;
-  border: 0;
-  padding: 0;
-  background: none;
-  color: var(--accent);
-  font: inherit;
-  font-size: 14px;
-  line-height: 20px;
-  font-weight: 500;
-  cursor: pointer;
-  text-align: left;
-}
-
-.btn-text:hover {
-  color: var(--accent-pressed);
+form.toolbar > .btn:not(.btn-secondary):not(.btn-danger):hover,
+form.toolbar > .btn:not(.btn-secondary):not(.btn-danger):active {
+  background: var(--border);
+  color: var(--text-primary);
 }
 
 #code-field {
@@ -126,7 +107,7 @@
 
 .error {
   background: var(--surface-variant);
-  color: var(--text-primary);
+  color: var(--error);
   border: 1px solid var(--border);
 }
 
@@ -155,18 +136,33 @@
 
 .tab {
   font: inherit;
+  font-size: 14px;
+  line-height: 20px;
+  font-weight: 500;
   padding: 8px 16px;
   border-radius: 999px;
   border: 1px solid var(--border);
-  background: transparent;
-  color: inherit;
+  background: var(--bg);
+  color: var(--text-primary);
   cursor: pointer;
+  transition:
+    background-color var(--dur-short) var(--ease-standard),
+    border-color var(--dur-short) var(--ease-standard),
+    color var(--dur-short) var(--ease-standard),
+    box-shadow var(--dur-short) var(--ease-standard);
+}
+
+.tab:hover {
+  background: var(--accent-container);
+  border-color: var(--accent);
+  color: var(--accent);
 }
 
 .tab[aria-current="page"] {
-  background: var(--accent);
+  background: var(--accent-container);
   border-color: var(--accent);
-  color: var(--on-accent);
+  color: var(--accent);
+  box-shadow: 0 1px 2px rgb(31 28 26 / 0.12);
 }
 
 .tools-view h2 {
@@ -199,15 +195,31 @@
 table.data {
   width: 100%;
   border-collapse: collapse;
-  font-size: 15px;
+  font-size: 14px;
+  line-height: 20px;
 }
 
 table.data th,
 table.data td {
   text-align: left;
-  padding: 8px 10px;
+  padding: 12px 10px;
   border-bottom: 1px solid var(--divider);
   vertical-align: middle;
+}
+
+table.data th {
+  color: var(--text-secondary);
+  font-size: 12px;
+  line-height: 16px;
+  font-weight: 500;
+}
+
+table.data tbody tr {
+  transition: background-color var(--dur-short) var(--ease-standard);
+}
+
+table.data tbody tr:hover {
+  background: var(--surface-variant);
 }
 
 .row-deleted {
@@ -254,19 +266,26 @@ table.data td {
 
 .field-error,
 .error-inline {
-  color: var(--danger, #b3261e);
-  font-size: 13px;
+  color: var(--error);
+  font-size: 12px;
+  line-height: 16px;
+  font-weight: 500;
 }
 
 .btn-small {
-  padding: 6px 14px;
+  padding: 8px 16px;
   font-size: 14px;
+  line-height: 20px;
 }
 
 .btn-secondary {
   background: transparent;
   color: var(--accent);
-  border: 1px solid currentColor;
+  border: 1px solid var(--accent);
+}
+
+.btn-secondary:active {
+  background: var(--accent-container);
 }
 
 .btn-danger {
@@ -296,7 +315,7 @@ table.data td {
   width: 100%;
   aspect-ratio: 4 / 3;
   object-fit: cover;
-  border-radius: 12px;
+  border-radius: var(--radius-card);
   background: var(--surface-variant);
 }
 
@@ -324,23 +343,11 @@ input.pos {
   width: 4.5rem;
 }
 
-@media (prefers-color-scheme: dark) {
-  .admin-page {
-    --danger: #f2b8b5;
-  }
-}
-
 .tools input[type="text"],
 .tools input[type="search"],
 .tools select,
 .tools textarea {
-  padding: 8px 12px;
-  border: 1px solid var(--border);
-  border-radius: 10px;
-  background: var(--bg);
-  color: var(--text-primary);
-  font: inherit;
-  font-size: 15px;
+  width: auto;
 }
 
 .tools textarea {
@@ -367,5 +374,6 @@ input.pos {
 }
 
 .tools code {
-  font-size: 13px;
+  font-size: 12px;
+  line-height: 16px;
 }
