@@ -108,7 +108,7 @@ function mountTools() {
       auth?.currentUser ? auth.currentUser.getIdToken(Boolean(forceRefresh)) : Promise.resolve(null),
   });
   adminMain?.classList.add("admin-wide");
-  tools = mountAdminTools(toolsRoot, { api });
+  tools = mountAdminTools(toolsRoot, { api, cdn: envConfig.apis?.cdn ?? "" });
 }
 
 function nextGeneration() {

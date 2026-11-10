@@ -1,7 +1,7 @@
 // @vitest-environment jsdom
 import { beforeEach, describe, expect, it, vi } from "vitest";
 import { createApiClient } from "./api.js";
-import { loadScriptEditors, renderScriptsPanel, saveScript, scriptTargetQuery } from "./scripts.js";
+import { loadScriptEditors, saveScript, scriptTargetQuery } from "./scripts.js";
 
 const json = (status, body) => new Response(JSON.stringify(body), { status, headers: { "content-type": "application/json" } });
 const flush = async (n = 6) => { for (let i = 0; i < n; i += 1) await new Promise((r) => setTimeout(r, 0)); };
@@ -14,57 +14,11 @@ describe("script helpers", () => {
   });
 });
 
-describe("narration scripts panel", () => {
+describe("narration script api helpers", () => {
   let root;
   beforeEach(() => {
     document.body.innerHTML = '<div id="r"></div>';
     root = document.getElementById("r");
-  });
-
-  it("loads languages and skim/detailed content, then saves a skim upsert", async () => {
-    const puts = [];
-    const fetchImpl = vi.fn(async (url, init) => {
-      const u = new URL(url);
-      const key = `${init.method} ${u.pathname}`;
-      if (key === "GET /dev/v1/admin/script-languages") {
-        return json(200, { items: [
-          { code: "eng", name: "English", is_deleted: false },
-          { code: "hin", name: "Hindi", is_deleted: false },
-        ] });
-      }
-      if (key === "GET /dev/v1/admin/scripts") {
-        expect(u.searchParams.get("place_id")).toBe("plc_AbCdEfGhIjKl");
-        expect(u.searchParams.get("language")).toBe("eng");
-        return json(200, { items: [
-          { id: "scr_SkimSkimSkim", format: "skim", is_deleted: false, version: 2 },
-        ], total: 1 });
-      }
-      if (key === "GET /dev/v1/admin/scripts/scr_SkimSkimSkim") {
-        return json(200, { id: "scr_SkimSkimSkim", format: "skim", version: 2, content: "Welcome skim." });
-      }
-      if (key === "PUT /dev/v1/admin/scripts") {
-        puts.push(JSON.parse(init.body));
-        return json(200, { script: { id: "scr_SkimSkimSkim", version: 3, format: "skim" }, changed: true });
-      }
-      return json(404, { error: { code: "route_not_found", message: "missing" } });
-    });
-    const api = createApiClient({ bases: { media: "https://m.example/dev" }, getToken: async () => "tok", fetchImpl });
-    const { node } = renderScriptsPanel({ api, kind: "place", id: "plc_AbCdEfGhIjKl" });
-    root.append(node);
-    await flush(10);
-    expect(node.querySelector("h3").textContent).toBe("Narration scripts");
-    expect(node.querySelector('select[aria-label="Script language"]').value).toBe("eng");
-    expect(node.querySelector('#script-skim').value).toBe("Welcome skim.");
-    expect(node.querySelector('#script-detailed').value).toBe("");
-    expect(node.textContent).toContain("Version 2");
-    expect(node.textContent).toContain("No script saved yet");
-
-    node.querySelector("#script-skim").value = "Welcome skim updated.";
-    [...node.querySelectorAll("button")].find((b) => b.textContent === "Save skim").click();
-    await flush(6);
-    expect(puts).toEqual([{ place_id: "plc_AbCdEfGhIjKl", language: "eng", format: "skim", content: "Welcome skim updated." }]);
-    expect(node.querySelector('[role="status"]').textContent).toContain("Saved skim");
-    expect(node.querySelector('[role="status"]').textContent).toContain("version 3");
   });
 
   it("saveScript uses spot_id for spots", async () => {

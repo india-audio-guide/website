@@ -30,7 +30,7 @@ export class UploadError extends Error {
  * The PUT goes to the presigned URL with exactly the returned headers and no Authorization.
  * `onStep(step)` is called before each step ("presign", "upload", "complete").
  */
-export async function uploadImage({ api, fetchImpl = (...a) => globalThis.fetch(...a), parentType, parentId, file, onStep = () => {} }) {
+export async function uploadImage({ api, fetchImpl = (...a) => globalThis.fetch(...a), putImpl, parentType, parentId, file, onStep = () => {}, onProgress }) {
   const invalid = validateImageFile(file);
   if (invalid) throw new UploadError("presign", new ApiError({ code: "invalid_file", message: invalid }));
 
@@ -53,11 +53,10 @@ export async function uploadImage({ api, fetchImpl = (...a) => globalThis.fetch(
   onStep("upload");
   let res;
   try {
-    res = await fetchImpl(presign.upload_url, {
-      method: "PUT",
-      headers: { ...(presign.headers ?? { "Content-Type": file.type }) },
-      body: file,
-    });
+    const headers = { ...(presign.headers ?? { "Content-Type": file.type }) };
+    res = putImpl
+      ? await putImpl(presign.upload_url, headers, file, onProgress)
+      : await fetchImpl(presign.upload_url, { method: "PUT", headers, body: file });
   } catch {
     throw new UploadError("upload", new ApiError({ code: "network_error", message: "Network error" }));
   }
@@ -106,4 +105,22 @@ export function moveImage(items, id, delta) {
   if (from < 0 || to < 0 || to >= ids.length) return null;
   [ids[from], ids[to]] = [ids[to], ids[from]];
   return ids;
+}
+
+/**
+ * PUT with upload progress (XMLHttpRequest; fetch has no upload progress). Resolves `{ ok, status }`,
+ * rejects on a network error. `onProgress(fraction)` gets 0..1. `Xhr` is injectable for tests.
+ */
+export function xhrPut(url, headers, body, onProgress, Xhr = globalThis.XMLHttpRequest) {
+  return new Promise((resolve, reject) => {
+    const xhr = new Xhr();
+    xhr.open("PUT", url);
+    for (const [k, v] of Object.entries(headers ?? {})) xhr.setRequestHeader(k, v);
+    if (xhr.upload && onProgress) {
+      xhr.upload.onprogress = (e) => { if (e.lengthComputable && e.total) onProgress(e.loaded / e.total); };
+    }
+    xhr.onload = () => resolve({ ok: xhr.status >= 200 && xhr.status < 300, status: xhr.status });
+    xhr.onerror = () => reject(new Error("network"));
+    xhr.send(body);
+  });
 }
