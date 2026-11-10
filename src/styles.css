@@ -272,29 +272,92 @@ a:hover { color: var(--accent-pressed); }
   color: var(--accent);
 }
 
+/* Landing hero: full-bleed photograph with the intro overlaid (original a471736 style). */
 .hero {
-  min-height: 56vh;
-  min-height: 56dvh;
+  position: relative;
+  min-height: 92vh;
+  min-height: 92dvh;
+  display: grid;
+  align-items: end;
+  color: var(--hero-text);
   background: #1f1c1a center / cover no-repeat;
-  background-image:
-    linear-gradient(180deg, rgb(31 28 26 / 0.28), rgb(31 28 26 / 0.08) 40%, rgb(31 28 26 / 0.28)),
-    url("/images/hero-hampi.webp");
+  background-image: url("/images/hero-hampi.webp");
 }
 
-.intro-sheet,
+.hero::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background:
+    linear-gradient(180deg, rgb(31 28 26 / 0.28) 0%, rgb(31 28 26 / 0.12) 32%, rgb(31 28 26 / 0.72) 100%),
+    linear-gradient(90deg, rgb(31 28 26 / 0.35) 0%, transparent 55%);
+}
+
+.hero-inner {
+  position: relative;
+  padding: 0 0 72px;
+  max-width: 38rem;
+}
+
+.hero .eyebrow {
+  display: inline-block;
+  margin: 0 0 var(--space-m);
+  padding: 6px 12px;
+  border-radius: 999px;
+  background: rgb(250 248 245 / 0.14);
+  border: 1px solid rgb(250 248 245 / 0.22);
+  color: var(--hero-text);
+  font-size: 12px;
+  line-height: 16px;
+  font-weight: 500;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+}
+
+.hero h1 {
+  margin: 0 0 var(--space-m);
+  font-size: 28px;
+  line-height: 34px;
+  font-weight: 600;
+  color: var(--hero-text);
+}
+
+@media (min-width: 720px) {
+  .hero h1 {
+    font-size: 48px;
+    line-height: 56px;
+  }
+}
+
+.hero .hindi {
+  margin: 0 0 var(--space-l);
+  line-height: 28px;
+  color: var(--hero-muted);
+}
+
+.hero .lede {
+  color: var(--hero-muted);
+  max-width: 36rem;
+}
+
+.hero .stat-strip {
+  max-width: 30rem;
+  border-color: rgb(250 248 245 / 0.22);
+}
+
+.hero .stat-strip div { padding-inline: 0 var(--space-m); }
+.hero .stat-strip div + div {
+  padding-left: var(--space-m);
+  border-left-color: rgb(250 248 245 / 0.22);
+}
+.hero .stat-strip strong { color: var(--hero-text); }
+.hero .stat-strip span { color: var(--hero-muted); }
+
 .band-sheet {
   position: relative;
   margin-top: -28px;
   background: var(--bg);
   border-radius: var(--radius-sheet) var(--radius-sheet) 0 0;
-}
-
-.intro-sheet { padding: var(--space-xl) 0 var(--space-l); }
-
-.sheet-inner {
-  max-width: 40rem;
-  margin-inline: auto;
-  text-align: center;
 }
 
 .kicker,
@@ -308,8 +371,7 @@ a:hover { color: var(--accent-pressed); }
   text-transform: uppercase;
 }
 
-h1,
-.hero h1 {
+h1 {
   margin: 0 0 var(--space-s);
   font-size: 28px;
   line-height: 34px;
@@ -463,7 +525,7 @@ h3 {
 
 section { padding: 48px 0; }
 
-.intro-sheet + main > section:first-child,
+.hero + main > section:first-child,
 .band + section { padding-top: var(--space-l); }
 
 .surface { background: var(--surface); }
