@@ -29,6 +29,14 @@ import {
 import { explainFirebaseError } from "./errors.js";
 import { createApiClient } from "./api.js";
 import { mountAdminTools } from "./screens.js";
+import {
+  applyTheme,
+  nextTheme,
+  readStoredTheme,
+  syncThemeToggleButton,
+  systemPrefersDark,
+  writeStoredTheme,
+} from "./theme.js";
 
 const loginForm = document.getElementById("login-form");
 const codeField = document.getElementById("code-field");
@@ -46,11 +54,31 @@ const envKicker = document.getElementById("env-kicker");
 const pageTitle = document.getElementById("page-title");
 const intro = document.getElementById("intro");
 const headerSignOutBtn = document.getElementById("header-sign-out");
+const themeToggleBtn = document.getElementById("theme-toggle");
+const adminLogo = document.getElementById("admin-logo");
+const metaThemeColor = document.querySelector('meta[name="theme-color"]');
 const toolsRoot = document.getElementById("admin-tools");
 const adminMain = document.getElementById("admin-main");
 
 const TITLE_SIGN_IN = "Admin sign in · India Audio Guide";
 const TITLE_ADMIN = "Admin · India Audio Guide";
+
+const colorSchemeQuery =
+  typeof window.matchMedia === "function"
+    ? window.matchMedia("(prefers-color-scheme: dark)")
+    : { matches: false, addEventListener() {}, addListener() {} };
+
+function refreshTheme(stored = readStoredTheme(window.localStorage)) {
+  const result = applyTheme({
+    stored,
+    prefersDark: systemPrefersDark(colorSchemeQuery),
+    root: document.documentElement,
+    metaThemeColor,
+    logo: adminLogo,
+  });
+  syncThemeToggleButton(themeToggleBtn, result.resolved);
+  return result;
+}
 
 let auth = null;
 let envConfig = null;
@@ -376,4 +404,26 @@ headerSignOutBtn?.addEventListener("click", () => {
   void handleSignOutClick();
 });
 
+themeToggleBtn?.addEventListener("click", () => {
+  const current = refreshTheme().resolved;
+  const chosen = nextTheme(current);
+  writeStoredTheme(window.localStorage, chosen);
+  refreshTheme(chosen);
+});
+
+function watchSystemTheme() {
+  const onChange = () => {
+    // Only re-apply when the user has not chosen; stored choice still wins.
+    if (readStoredTheme(window.localStorage)) return;
+    refreshTheme(null);
+  };
+  if (typeof colorSchemeQuery.addEventListener === "function") {
+    colorSchemeQuery.addEventListener("change", onChange);
+  } else if (typeof colorSchemeQuery.addListener === "function") {
+    colorSchemeQuery.addListener(onChange);
+  }
+}
+
+refreshTheme();
+watchSystemTheme();
 void start();

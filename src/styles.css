@@ -87,7 +87,7 @@
 }
 
 @media (prefers-color-scheme: dark) {
-  :root {
+  :root:not([data-theme="light"]) {
     --bg: #1f1c1a;
     --surface: #2a2623;
     --surface-variant: #352f2b;
@@ -104,6 +104,25 @@
     --shadow: 0 8px 28px rgb(0 0 0 / 0.45);
     color-scheme: dark;
   }
+}
+
+/* Explicit admin (or shared) override; beats the system preference. */
+:root[data-theme="dark"] {
+    --bg: #1f1c1a;
+    --surface: #2a2623;
+    --surface-variant: #352f2b;
+    --divider: #3f3934;
+    --border: #4a433d;
+    --text-tertiary: #8d857d;
+    --text-secondary: #b5ada5;
+    --text-primary: #f3f0eb;
+    --accent: #f08a5d;
+    --accent-pressed: #f3a07c;
+    --accent-container: #3d241c;
+    --on-accent: #1f1c1a;
+    --error: #f2b8b5;
+    --shadow: 0 8px 28px rgb(0 0 0 / 0.45);
+    color-scheme: dark;
 }
 
 *,

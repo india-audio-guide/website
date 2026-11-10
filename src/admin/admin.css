@@ -24,6 +24,14 @@
   min-width: 0;
 }
 
+.admin-header-actions {
+  display: flex;
+  align-items: center;
+  gap: var(--space-s);
+  flex: none;
+}
+
+.admin-theme-toggle,
 .admin-logout {
   border: none;
   cursor: pointer;
@@ -33,6 +41,18 @@
 
 .admin-logout[hidden] {
   display: none;
+}
+
+.admin-theme-toggle .icon-sun {
+  display: none;
+}
+
+.admin-theme-toggle[data-theme="dark"] .icon-moon {
+  display: none;
+}
+
+.admin-theme-toggle[data-theme="dark"] .icon-sun {
+  display: block;
 }
 
 .admin-brand img {
