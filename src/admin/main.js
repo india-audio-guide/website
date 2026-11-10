@@ -85,7 +85,8 @@ let envConfig = null;
 let verifier = null;
 let confirmation = null;
 let generation = 0;
-let view = "form";
+// Start neutral: the login form stays hidden until the first auth event resolves.
+let view = "checking";
 let formState = initialLoginForm();
 let tools = null;
 
@@ -170,11 +171,13 @@ function showView(next) {
   view = next;
   const isChecking = next === "checking";
   const isAdmin = next === "admin";
+  // "blocked": config or persistence error; only the error banner shows.
+  const isBlocked = next === "blocked";
   if (!isAdmin) unmountTools();
   checking.hidden = !isChecking;
   signedIn.hidden = !isAdmin;
-  loginForm.hidden = isChecking || isAdmin;
-  if (intro) intro.hidden = isChecking || isAdmin;
+  loginForm.hidden = isChecking || isAdmin || isBlocked;
+  if (intro) intro.hidden = isChecking || isAdmin || isBlocked;
   if (pageTitle) {
     pageTitle.hidden = isChecking;
     pageTitle.textContent = isAdmin ? "Admin" : "Sign in";
@@ -184,6 +187,8 @@ function showView(next) {
   if (isAdmin) {
     setText(statusEl, "");
     setText(errorEl, "");
+    confirmation = null;
+    clearVerifier();
   }
   if (isChecking || isAdmin) {
     changeNumberBtn.hidden = true;
@@ -339,7 +344,7 @@ async function verifyCode() {
 async function start() {
   const requested = parseRequestedEnv(window.location.search);
   if (!requested.ok) {
-    loginForm.hidden = true;
+    showView("blocked");
     showError(requested.error);
     return;
   }
@@ -347,7 +352,7 @@ async function start() {
   envConfig = ENVS[requested.env];
   envKicker.textContent = `Admin · ${envConfig.name}`;
   if (!firebaseConfigReady(envConfig)) {
-    loginForm.hidden = true;
+    showView("blocked");
     showError("This environment's public Firebase config is incomplete.");
     return;
   }
@@ -357,6 +362,7 @@ async function start() {
   try {
     await setPersistence(auth, browserSessionPersistence);
   } catch {
+    showView("blocked");
     showError(
       "Could not set a session-only sign-in. Reload the page and try again.",
     );

@@ -1,5 +1,10 @@
 @import "../styles.css";
 
+/* Hidden means not rendered, even when a component rule sets display (e.g. .admin-form grid). */
+[hidden] {
+  display: none !important;
+}
+
 .admin-page {
   --danger: var(--error);
   min-height: 100vh;
@@ -37,10 +42,6 @@
   cursor: pointer;
   color: var(--text-primary);
   padding: 0;
-}
-
-.admin-logout[hidden] {
-  display: none;
 }
 
 .admin-theme-toggle .icon-sun {

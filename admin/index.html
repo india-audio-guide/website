@@ -73,20 +73,20 @@
     </header>
     <main id="admin-main" class="wrap admin-main">
       <p class="section-kicker" id="env-kicker">Admin</p>
-      <h1 id="page-title">Sign in</h1>
-      <p class="section-lead" id="intro">
+      <h1 id="page-title" hidden>Sign in</h1>
+      <p class="section-lead" id="intro" hidden>
         Use the phone number on your account. Only admins can stay signed in.
       </p>
 
       <p id="status" class="status" hidden role="status"></p>
       <p id="error" class="error" hidden role="alert"></p>
 
-      <section id="checking" class="note" hidden>
+      <section id="checking" class="note">
         <h2>Checking access…</h2>
         <p>Please wait while we confirm your account.</p>
       </section>
 
-      <form id="login-form" class="note admin-form">
+      <form id="login-form" class="note admin-form" hidden>
         <label for="phone">Mobile number</label>
         <div class="phone-field">
           <span class="phone-prefix" aria-hidden="true">+91</span>

@@ -40,6 +40,9 @@ async function boot() {
   vi.stubGlobal("fetch", fetchMock);
   await import("./main.js");
   await flush();
+  // Firebase always fires an initial auth event; signed-out leaves the loading state for the form.
+  fb.onState(null);
+  await flush();
   return fetchMock;
 }
 
