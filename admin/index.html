@@ -12,14 +12,30 @@
   <body class="admin-page">
     <a class="skip" href="#admin-main">Skip to content</a>
     <header class="admin-header">
-      <div class="wrap admin-brand">
-        <img src="/icons/icon_light.svg" width="44" height="44" alt="" />
-        <span class="brand-name">India Audio Guide</span>
+      <div class="wrap admin-header-bar">
+        <div class="admin-brand">
+          <img src="/icons/icon_light.svg" width="44" height="44" alt="" />
+          <span class="brand-name">India Audio Guide</span>
+        </div>
+        <button
+          type="button"
+          class="icon-btn admin-logout"
+          id="header-sign-out"
+          aria-label="Sign out"
+          hidden
+        >
+          <svg width="20" height="20" viewBox="0 0 24 24" aria-hidden="true" focusable="false">
+            <path
+              fill="currentColor"
+              d="M10 17v-3h4v-4h-4V7l-5 5 5 5zm9-13H9c-1.1 0-2 .9-2 2v3h2V6h10v12H9v-3H7v3c0 1.1.9 2 2 2h10c1.1 0 2-.9 2-2V6c0-1.1-.9-2-2-2z"
+            />
+          </svg>
+        </button>
       </div>
     </header>
     <main id="admin-main" class="wrap admin-main">
       <p class="section-kicker" id="env-kicker">Admin</p>
-      <h1>Sign in</h1>
+      <h1 id="page-title">Sign in</h1>
       <p class="section-lead" id="intro">
         Use the phone number on your account. Only admins can stay signed in.
       </p>
@@ -33,16 +49,22 @@
       </section>
 
       <form id="login-form" class="note admin-form">
-        <label for="phone">Phone number</label>
-        <input
-          id="phone"
-          name="phone"
-          type="tel"
-          inputmode="tel"
-          placeholder="+91…"
-          autocomplete="tel"
-          required
-        />
+        <label for="phone">Mobile number</label>
+        <div class="phone-field">
+          <span class="phone-prefix" aria-hidden="true">+91</span>
+          <input
+            id="phone"
+            name="phone"
+            type="tel"
+            inputmode="tel"
+            autocomplete="tel"
+            maxlength="15"
+            placeholder="10-digit number"
+            aria-describedby="phone-prefix-sr"
+            required
+          />
+          <span id="phone-prefix-sr" class="sr-only">Country code plus nine one is fixed. Enter the ten-digit mobile number.</span>
+        </div>
         <div id="code-field" hidden>
           <label for="code">SMS code</label>
           <input
@@ -62,10 +84,9 @@
       </form>
 
       <section id="signed-in" class="note" hidden>
-        <h2>Signed in</h2>
+        <h2 class="sr-only">Signed in</h2>
         <p id="signed-in-body"></p>
         <p id="signed-in-extra"></p>
-        <button type="button" class="btn" id="sign-out">Sign out</button>
       </section>
 
       <section id="admin-tools" class="admin-tools" hidden aria-label="Admin tools"></section>

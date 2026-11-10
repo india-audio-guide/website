@@ -37,17 +37,44 @@ export function firebaseConfigReady(envConfig) {
   return Boolean(fb?.apiKey && fb?.authDomain && fb?.projectId);
 }
 
-/** 10-digit numbers get +91, matching the admin CLI. */
+/**
+ * Match the Flutter app AuthState._e164:
+ * strip non-digits; keep a leading +; 10 digits get +91; digits starting with 91 get +.
+ */
 export function normalizePhone(raw) {
-  const v = String(raw ?? "").trim();
-  if (/^\d{10}$/.test(v)) return `+91${v}`;
-  if (v.startsWith("+")) return v;
-  if (/^\d+$/.test(v)) return `+${v}`;
-  return v;
+  const trimmed = String(raw ?? "").trim();
+  const digits = trimmed.replace(/\D/g, "");
+  if (!digits) return "";
+  if (trimmed.startsWith("+")) return `+${digits}`;
+  if (digits.length === 10) return `+91${digits}`;
+  if (digits.startsWith("91")) return `+${digits}`;
+  return `+${digits}`;
 }
 
 export function isE164(phone) {
   return /^\+[1-9]\d{6,14}$/.test(phone);
+}
+
+/**
+ * National digits for the +91-prefixed field.
+ * Pasting +9198… / 9198… / 98… keeps only the 10-digit national number in the input.
+ */
+export function nationalDigitsFromPhoneInput(raw) {
+  const trimmed = String(raw ?? "").trim();
+  const digits = trimmed.replace(/\D/g, "");
+  if (!digits) return "";
+  if (digits.length >= 12 && digits.startsWith("91")) {
+    return digits.slice(2, 12);
+  }
+  if (digits.length > 10) {
+    return digits.slice(-10);
+  }
+  return digits;
+}
+
+/** Same gate as the Flutter app: normalized E.164 shorter than 12 is too short. */
+export function isPhoneTooShort(e164) {
+  return String(e164 ?? "").length < 12;
 }
 
 /**

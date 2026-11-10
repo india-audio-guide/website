@@ -27,7 +27,7 @@ function guidanceForCode(code) {
       return "Too many attempts from this device. Wait a bit and try again.";
     case "auth/invalid-phone-number":
     case "auth/missing-phone-number":
-      return "Enter a valid phone number including country code, for example +91…";
+      return "Enter a mobile number.";
     case "auth/invalid-verification-code":
       return "That code was not valid. Try again.";
     case "auth/code-expired":

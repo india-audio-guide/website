@@ -62,11 +62,11 @@ describe("single primary login button", () => {
 
   it("does not advance to Verify on a phone validation error", () => {
     const { view, state } = viewAfter([
-      { type: "validate", error: "Enter a valid phone number including country code, for example +91…" },
+      { type: "validate", error: "Enter a mobile number." },
     ]);
     expect(view.buttonLabel).toBe("Send code");
     expect(view.showCode).toBe(false);
-    expect(state.error).toMatch(/valid phone number/);
+    expect(state.error).toBe("Enter a mobile number.");
   });
 
   it("shows Verifying… then keeps Verify after a failed attempt", () => {

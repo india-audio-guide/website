@@ -7,6 +7,8 @@ import {
   evaluateAuthEvent,
   firebaseConfigReady,
   isE164,
+  isPhoneTooShort,
+  nationalDigitsFromPhoneInput,
   normalizePhone,
   parseRequestedEnv,
 } from "./guard.js";
@@ -144,11 +146,31 @@ describe("denialMessage", () => {
 });
 
 describe("phone helpers", () => {
-  it("normalizes 10-digit Indian numbers to E.164", () => {
+  it("normalizes like the Flutter app _e164", () => {
     expect(normalizePhone("9876543210")).toBe("+919876543210");
+    expect(normalizePhone("+919876543210")).toBe("+919876543210");
+    expect(normalizePhone("919876543210")).toBe("+919876543210");
+    expect(normalizePhone("+91 98765 43210")).toBe("+919876543210");
     expect(normalizePhone("+447700900123")).toBe("+447700900123");
+    expect(normalizePhone("")).toBe("");
     expect(isE164("+919876543210")).toBe(true);
     expect(isE164("9876543210")).toBe(false);
+  });
+
+  it("rejects short numbers the same way as the app", () => {
+    expect(isPhoneTooShort(normalizePhone("98"))).toBe(true);
+    expect(isPhoneTooShort(normalizePhone("987654321"))).toBe(true);
+    expect(isPhoneTooShort(normalizePhone("9876543210"))).toBe(false);
+    expect(isPhoneTooShort("")).toBe(true);
+  });
+
+  it("keeps only national digits in the +91 field", () => {
+    expect(nationalDigitsFromPhoneInput("9876543210")).toBe("9876543210");
+    expect(nationalDigitsFromPhoneInput("+919876543210")).toBe("9876543210");
+    expect(nationalDigitsFromPhoneInput("919876543210")).toBe("9876543210");
+    expect(nationalDigitsFromPhoneInput("+91 98765 43210")).toBe("9876543210");
+    expect(nationalDigitsFromPhoneInput("98a76")).toBe("9876");
+    expect(nationalDigitsFromPhoneInput("")).toBe("");
   });
 });
 

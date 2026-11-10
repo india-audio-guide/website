@@ -14,7 +14,8 @@ import {
   denialMessage,
   evaluateAuthEvent,
   firebaseConfigReady,
-  isE164,
+  isPhoneTooShort,
+  nationalDigitsFromPhoneInput,
   normalizePhone,
   parseRequestedEnv,
   toolsDecision,
@@ -42,9 +43,14 @@ const signedInExtra = document.getElementById("signed-in-extra");
 const statusEl = document.getElementById("status");
 const errorEl = document.getElementById("error");
 const envKicker = document.getElementById("env-kicker");
-const signOutBtn = document.getElementById("sign-out");
+const pageTitle = document.getElementById("page-title");
+const intro = document.getElementById("intro");
+const headerSignOutBtn = document.getElementById("header-sign-out");
 const toolsRoot = document.getElementById("admin-tools");
 const adminMain = document.getElementById("admin-main");
+
+const TITLE_SIGN_IN = "Admin sign in · India Audio Guide";
+const TITLE_ADMIN = "Admin · India Audio Guide";
 
 let auth = null;
 let envConfig = null;
@@ -140,9 +146,28 @@ function showView(next) {
   checking.hidden = !isChecking;
   signedIn.hidden = !isAdmin;
   loginForm.hidden = isChecking || isAdmin;
+  if (intro) intro.hidden = isChecking || isAdmin;
+  if (pageTitle) {
+    pageTitle.hidden = isChecking;
+    pageTitle.textContent = isAdmin ? "Admin" : "Sign in";
+  }
+  document.title = isAdmin ? TITLE_ADMIN : TITLE_SIGN_IN;
+  if (headerSignOutBtn) headerSignOutBtn.hidden = !isAdmin;
+  if (isAdmin) {
+    setText(statusEl, "");
+    setText(errorEl, "");
+  }
   if (isChecking || isAdmin) {
     changeNumberBtn.hidden = true;
   }
+}
+
+async function handleSignOutClick() {
+  const snapshot = nextGeneration();
+  await safeSignOut();
+  if (isStale(snapshot)) return;
+  showView("form");
+  resetLoginForm({ type: "reset", status: "You have signed out." });
 }
 
 async function safeSignOut() {
@@ -226,12 +251,21 @@ async function syncUser(user) {
   resetLoginForm({ type: "reset", error: denialMessage(decision.reason) });
 }
 
+function syncPhoneInputValue() {
+  if (!phoneInput) return;
+  const next = nationalDigitsFromPhoneInput(phoneInput.value);
+  if (phoneInput.value !== next) {
+    phoneInput.value = next;
+  }
+}
+
 async function sendCode() {
+  syncPhoneInputValue();
   const phone = normalizePhone(phoneInput.value);
-  if (!isE164(phone)) {
+  if (isPhoneTooShort(phone)) {
     dispatchForm({
       type: "validate",
-      error: "Enter a valid phone number including country code, for example +91…",
+      error: "Enter a mobile number.",
     });
     return;
   }
@@ -329,12 +363,17 @@ changeNumberBtn.addEventListener("click", () => {
   phoneInput.focus();
 });
 
-signOutBtn.addEventListener("click", async () => {
-  const snapshot = nextGeneration();
-  await safeSignOut();
-  if (isStale(snapshot)) return;
-  showView("form");
-  resetLoginForm({ type: "reset", status: "You have signed out." });
+phoneInput?.addEventListener("input", () => {
+  syncPhoneInputValue();
+});
+
+phoneInput?.addEventListener("paste", () => {
+  // Let the paste land, then strip +91 / 91 from the editable value.
+  queueMicrotask(() => syncPhoneInputValue());
+});
+
+headerSignOutBtn?.addEventListener("click", () => {
+  void handleSignOutClick();
 });
 
 void start();

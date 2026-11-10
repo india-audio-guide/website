@@ -94,10 +94,42 @@ describe("admin tools stay behind the role gate", () => {
     expect(String(url)).toMatch(/^https:\/\/5yhpykl6wg\.execute-api\.ap-south-2\.amazonaws\.com\/dev\/v1\/admin\/places\?/);
     expect(init.headers.authorization).toBe("Bearer tok");
 
-    document.getElementById("sign-out").click();
+    document.getElementById("header-sign-out").click();
     await flush();
     expect(tools().hidden).toBe(true);
     expect(tools().children).toHaveLength(0);
+  });
+
+  it("hides sign-in chrome after admin and restores it after header logout", async () => {
+    await boot();
+    const title = document.getElementById("page-title");
+    const intro = document.getElementById("intro");
+    const form = document.getElementById("login-form");
+    const logout = document.getElementById("header-sign-out");
+
+    expect(title.textContent).toBe("Sign in");
+    expect(intro.hidden).toBe(false);
+    expect(form.hidden).toBe(false);
+    expect(logout.hidden).toBe(true);
+    expect(logout.getAttribute("aria-label")).toBe("Sign out");
+
+    await signIn({ role: 10 });
+    expect(title.textContent).toBe("Admin");
+    expect(document.title).toMatch(/^Admin ·/);
+    expect(intro.hidden).toBe(true);
+    expect(form.hidden).toBe(true);
+    expect(logout.hidden).toBe(false);
+    expect(document.getElementById("status").hidden).toBe(true);
+    expect(document.getElementById("error").hidden).toBe(true);
+
+    logout.click();
+    await flush();
+    expect(fb.signOut).toHaveBeenCalled();
+    expect(title.textContent).toBe("Sign in");
+    expect(document.title).toMatch(/^Admin sign in ·/);
+    expect(intro.hidden).toBe(false);
+    expect(form.hidden).toBe(false);
+    expect(logout.hidden).toBe(true);
   });
 
   it("a later token without the admin role removes the tools", async () => {
