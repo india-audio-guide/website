@@ -466,3 +466,28 @@ input.pos {
   font-size: 12px;
   line-height: 16px;
 }
+
+.scripts-panel .script-editors {
+  display: grid;
+  gap: var(--space-l);
+  margin-top: var(--space-m);
+}
+
+.scripts-panel .script-block h4 {
+  margin: 0 0 var(--space-s);
+  font-size: 16px;
+}
+
+.scripts-panel textarea {
+  width: 100%;
+  min-height: 10rem;
+  resize: vertical;
+  font: inherit;
+  line-height: 1.45;
+  padding: var(--space-s);
+  border-radius: 12px;
+  border: 1px solid var(--border);
+  background: var(--surface-raised, var(--surface));
+  color: var(--text-primary);
+  box-sizing: border-box;
+}

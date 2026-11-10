@@ -9,6 +9,7 @@ export const STATE_ID_RE = /^ste_[A-Za-z0-9_-]{12}$/;
 
 const slug = { name: "slug", label: "Slug", type: "text", required: true, max: 100, pattern: SLUG_RE, patternHint: "Lower-case words joined by -" };
 const summary = { name: "summary", label: "Summary", type: "textarea", max: 5000, nullable: true };
+const catalogueSummary = { name: "summary", label: "Catalogue summary", type: "textarea", max: 5000, nullable: true };
 const latitude = { name: "latitude", label: "Latitude", type: "float", min: -90, max: 90, nullable: true };
 const longitude = { name: "longitude", label: "Longitude", type: "float", min: -180, max: 180, nullable: true };
 const stateId = { name: "state_id", label: "State", type: "state", required: true };
@@ -27,7 +28,7 @@ export const ENTITIES = {
       slug,
       { name: "name", label: "Name", type: "text", required: true, min: 1, max: 200 },
       { name: "city", label: "City", type: "text", max: 200, nullable: true },
-      summary,
+      catalogueSummary,
       latitude,
       longitude,
       { name: "skim_minutes", label: "Skim minutes", type: "int", min: 1, nullable: true },
@@ -45,7 +46,7 @@ export const ENTITIES = {
     fields: [
       slug,
       { name: "title", label: "Title", type: "text", required: true, min: 1, max: 200 },
-      summary,
+      catalogueSummary,
       latitude,
       longitude,
       { name: "radius_m", label: "Radius (m)", type: "int", min: 1, nullable: true },

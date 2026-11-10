@@ -4,6 +4,7 @@
 import { formatApiError } from "./api.js";
 import { ENTITIES, nextPosition, parsePosition, rowToValues, toCreatePayload, toPatchPayload } from "./forms.js";
 import { UploadError, hasPending, moveImage, pollImages, uploadImage, validateImageFile, IMAGE_TYPES } from "./upload.js";
+import { renderScriptsPanel } from "./scripts.js";
 
 export const PAGE_SIZE = 25;
 
@@ -267,6 +268,9 @@ export function mountAdminTools(root, { api, fetchImpl, confirmFn = (t) => windo
     if (id) {
       gallery = renderGallery({ parentType: meta.parentType, parentId: id, coverId: row.cover, token, onCover: (coverId) => { row = { ...row, cover: coverId }; paintHeader(); } });
       view.append(gallery.node);
+      if (kind === "place" || kind === "spot") {
+        view.append(renderScriptsPanel({ api, kind, id, isCurrent: () => isCurrent(token) }).node);
+      }
       if (kind === "place") view.append(await renderSpots(id, token));
       if (kind === "collection") view.append(await renderMembers(id, token));
     }

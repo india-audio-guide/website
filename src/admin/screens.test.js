@@ -61,12 +61,15 @@ describe("catalogue screens", () => {
         { id: "img_AAAAAAAAAAAA", status: "ready", urls: { 320: "https://cdn.example/images/img_AAAAAAAAAAAA/320.webp" } },
         { id: "img_BBBBBBBBBBBB", status: "pending", urls: null },
       ] }),
+      "GET /dev/v1/admin/script-languages": () => json(200, { items: [{ code: "eng", name: "English", is_deleted: false }] }),
+      "GET /dev/v1/admin/scripts": () => json(200, { items: [], total: 0 }),
     });
     mountAdminTools(root, { api, sleep: () => new Promise(() => {}) });
     await flush();
     [...root.querySelectorAll("button")].find((b) => b.textContent === "Open").click();
     await flush(8);
     expect(root.querySelector("h2").textContent).toBe("Place: Hampi");
+    expect([...root.querySelectorAll("label")].some((l) => l.textContent.includes("Catalogue summary"))).toBe(true);
     expect(root.querySelector("#f-state_id").value).toBe(PLACE.state_id);
     root.querySelector("#f-city").value = "";
     root.querySelector("form.entity-form").dispatchEvent(new Event("submit", { cancelable: true }));
@@ -75,7 +78,7 @@ describe("catalogue screens", () => {
     [...root.querySelectorAll("button")].find((b) => b.textContent === "Publish").click();
     await flush();
     expect(root.querySelector(".meta").textContent).toContain("published");
-    expect([...root.querySelectorAll("h3")].map((x) => x.textContent)).toEqual(["Images", "Spots"]);
+    expect([...root.querySelectorAll("h3")].map((x) => x.textContent)).toEqual(["Images", "Narration scripts", "Spots"]);
     const cards = [...root.querySelectorAll(".image-card")];
     expect(cards).toHaveLength(2);
     expect(cards[0].querySelector("img").getAttribute("src")).toBe("https://cdn.example/images/img_AAAAAAAAAAAA/320.webp");
